@@ -191,7 +191,9 @@
     var weather;
     var temp;
     var videoselect;
-    var clouds = "P-eAx3Dxpj4";
+    var clouds = ["EwTZ2xpQwpA","tIdIqbv7SPo"];
+    var cold = ["moSFlvxnbgk","mjwV5w0IrcA","prN3bPmDqr4"];
+    var hot = ["NaCCG7QkM_c","La4Dcd1aUcE","iPUmE-tne5U"];
     var zipcode;
 
 
@@ -253,12 +255,20 @@
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          };
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+
+            // videoselect = "EwTZ2xpQwpA";
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
+
 
           });
 
@@ -271,7 +281,7 @@
                 videoId: videoselect,
                 events: {
                   'onReady': onPlayerReady,
-                  'onStateChange': onPlayerStateChange
+
                 }
               });
             }
@@ -279,21 +289,22 @@
             // 4. The API will call this function when the video player is ready.
             function onPlayerReady(event) {
               event.target.playVideo();
+
             }
 
             // 5. The API calls this function when the player's state changes.
             //    The function indicates that when playing a video (state=1),
             //    the player should play for six seconds and then stop.
-            var done = false;
-            function onPlayerStateChange(event) {
-              if (event.data == YT.PlayerState.PLAYING && !done) {
-                setTimeout(stopVideo, 6000);
-                done = true;
-              }
-            }
-            function stopVideo() {
-              player.stopVideo();
-            };
+            // var done = false;
+            // function onPlayerStateChange(event) {
+            //   if (event.data == YT.PlayerState.PLAYING && !done) {
+            //     setTimeout(stopVideo, 100000);
+            //     done = true;
+            //   }
+            // }
+            // function stopVideo() {
+            //   player.stopVideo();
+            // };
 
 
       }
@@ -320,13 +331,20 @@
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          }
 
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+            // videoselect = "EwTZ2xpQwpA";
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
+
 
           });
         };
@@ -336,12 +354,12 @@
         var player;
             function onYouTubeIframeAPIReady() {
               player = new YT.Player('player', {
-                height: '390',
-                width: '640',
+                height: '300',
+                width: '600',
                 videoId: videoselect,
                 events: {
                   'onReady': onPlayerReady,
-                  'onStateChange': onPlayerStateChange
+
                 }
               });
             }
@@ -354,16 +372,16 @@
             // 5. The API calls this function when the player's state changes.
             //    The function indicates that when playing a video (state=1),
             //    the player should play for six seconds and then stop.
-            var done = false;
-            function onPlayerStateChange(event) {
-              if (event.data == YT.PlayerState.PLAYING && !done) {
-                setTimeout(stopVideo, 6000);
-                done = true;
-              }
-            }
-            function stopVideo() {
-              player.stopVideo();
-            };
+            // var done = false;
+            // function onPlayerStateChange(event) {
+            //   if (event.data == YT.PlayerState.PLAYING && !done) {
+            //     setTimeout(stopVideo, 6000);
+            //     done = true;
+            //   }
+            // }
+            // function stopVideo() {
+            //   player.stopVideo();
+            // };
 
 
 
