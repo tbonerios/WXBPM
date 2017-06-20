@@ -234,7 +234,7 @@
     function doSomething(){
       console.log(zipcode);
       if(typeof zipcode !== "undefined"){
-        var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",us&APPID="+APIKey;
+        var queryURLlatlong = "https://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",us&APPID="+APIKey;
         $.ajax({
           url:queryURLlatlong,
           method: "GET"
@@ -310,7 +310,7 @@
       }
       else{
         console.log("zip is blank");
-        var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?lat="+Latitude+"&lon="+Longitude+"&APPID="+APIKey;
+        var queryURLlatlong = "https://api.openweathermap.org/data/2.5/weather?lat="+Latitude+"&lon="+Longitude+"&APPID="+APIKey;
         $.ajax({
           url:queryURLlatlong,
           method: "GET"
