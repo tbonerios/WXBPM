@@ -87,11 +87,15 @@
                   <form>Zip Code: <input type="text" name="zipcode" id="zipcode">
                   <input type="submit" value="Submit" id="submit">
                   </form>
+<<<<<<< HEAD
 
 
 
 
 
+=======
+
+>>>>>>> 2c964cb59d0e9e203a3445553617167c4a9ee0f5
 
         <div class="section section-team text-center ">
             <div class="container">
@@ -152,6 +156,213 @@
 <!-- Control Center for Now Ui Kit: parallax effects, scripts for the example pages etc -->
 <script src="assets/js/logic.js" type="text/javascript"></script>
 <script src = "https://openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js"></script>
+
+<script type="text/javascript">
+    
+    var Latitude;
+    var Longitude;
+    var APIKey = "166a433c57516f51dfab1f7edaed8413";
+    var weather;
+    var temp;
+    var videoselect;
+    var clouds = ["EwTZ2xpQwpA","tIdIqbv7SPo"];
+    var cold = ["moSFlvxnbgk","mjwV5w0IrcA","prN3bPmDqr4"];
+    var hot = ["NaCCG7QkM_c","La4Dcd1aUcE","iPUmE-tne5U"];
+    var zipcode;
+
+
+
+
+    function getLocation(){
+      console.log(navigator.geolocation)
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition,decline);
+        //return true;
+      } else {
+        console.log("fuck u")
+      }
+    };
+
+    function decline(){
+      console.log("decline");
+      $("#submit").on("click", function(){
+        event.preventDefault();
+        zipcode = $("#zipcode").val().trim();
+        console.log(zipcode);
+        doSomething();
+
+      });
+    };
+
+
+    function showPosition(position) {
+      Latitude = position.coords.latitude 
+      Longitude = position.coords.longitude; 
+      console.log(Latitude, Longitude);
+
+      doSomething();
+    };
+
+    getLocation();
+
+    function doSomething(){
+      console.log(zipcode);
+      if(typeof zipcode !== "undefined"){
+        var queryURLlatlong = "https://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",us&APPID="+APIKey;
+        $.ajax({
+          url:queryURLlatlong,
+          method: "GET"
+        }).done(function(response){
+          console.log(queryURLlatlong);
+          $(".city").text(response.name); 
+          weather = response.weather[0].main;   
+          $(".weather").text(weather);   
+          temp = ((response.main.temp)* (9/5) - 459.67).toFixed(2);
+          $(".temp").text(temp + "F");
+          
+
+          var tag = document.createElement('script');
+
+          tag.src = "https://www.youtube.com/iframe_api";
+          var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+          console.log(weather);
+
+//weather codes
+
+            // videoselect = "EwTZ2xpQwpA";
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
+
+
+          });
+
+        
+        var player;
+            function onYouTubeIframeAPIReady() {
+              player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: videoselect,
+                events: {
+                  'onReady': onPlayerReady,
+
+                }
+              });
+            }
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+              event.target.playVideo();
+
+            }
+
+            // 5. The API calls this function when the player's state changes.
+            //    The function indicates that when playing a video (state=1),
+            //    the player should play for six seconds and then stop.
+            // var done = false;
+            // function onPlayerStateChange(event) {
+            //   if (event.data == YT.PlayerState.PLAYING && !done) {
+            //     setTimeout(stopVideo, 100000);
+            //     done = true;
+            //   }
+            // }
+            // function stopVideo() {
+            //   player.stopVideo();
+            // };
+
+
+      }
+      else{
+        console.log("zip is blank");
+        var queryURLlatlong = "https://api.openweathermap.org/data/2.5/weather?lat="+Latitude+"&lon="+Longitude+"&APPID="+APIKey;
+        $.ajax({
+          url:queryURLlatlong,
+          method: "GET"
+        }).done(function(response){
+          console.log(queryURLlatlong);
+          $(".city").append(response.name); 
+          weather = response.weather[0].main;   
+          $(".weather").append(weather);   
+          temp = ((response.main.temp)* (9/5) - 459.67).toFixed(2);
+          $(".temp").append(temp + "F");
+          
+
+          var tag = document.createElement('script');
+
+          tag.src = "https://www.youtube.com/iframe_api";
+          var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+          console.log(weather);
+
+//weather codes
+
+            // videoselect = "EwTZ2xpQwpA";
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
+
+
+          });
+        };
+
+        };
+
+        var player;
+            function onYouTubeIframeAPIReady() {
+              player = new YT.Player('player', {
+                height: '300',
+                width: '600',
+                videoId: videoselect,
+                events: {
+                  'onReady': onPlayerReady,
+
+                }
+              });
+            }
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+              event.target.playVideo();
+            }
+
+            // 5. The API calls this function when the player's state changes.
+            //    The function indicates that when playing a video (state=1),
+            //    the player should play for six seconds and then stop.
+            // var done = false;
+            // function onPlayerStateChange(event) {
+            //   if (event.data == YT.PlayerState.PLAYING && !done) {
+            //     setTimeout(stopVideo, 6000);
+            //     done = true;
+            //   }
+            // }
+            // function stopVideo() {
+            //   player.stopVideo();
+            // };
+
+
+
+
+
+
+</script>
 
 
 </html>
