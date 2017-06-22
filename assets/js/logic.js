@@ -7,12 +7,184 @@ var navbar_initialized,
     backgroundOrange = false,
     toggle_initialized = false;
 
-var Latitude;
-var Longitude;
-var APIKey = "ef63d363da22ab0a1073a52bfc83bfcb";
-var weather;
-var temp;
-var videoselect;
+ var Latitude;
+    var Longitude;
+    var APIKey = "166a433c57516f51dfab1f7edaed8413";
+    var weather;
+    var temp;
+    var videoselect;
+    var clouds = "P-eAx3Dxpj4";
+    var zipcode;
+
+        function getLocation(){
+      console.log(navigator.geolocation)
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition,decline);
+        //return true;
+      } else {
+        console.log("fuck u")
+      }
+    };
+
+    function decline(){
+      console.log("decline");
+      $("#submit").on("click", function(){
+        event.preventDefault();
+        zipcode = $("#zipcode").val().trim();
+        console.log(zipcode);
+        doSomething();
+
+      });
+    };
+
+
+    function showPosition(position) {
+      Latitude = position.coords.latitude 
+      Longitude = position.coords.longitude; 
+      console.log(Latitude, Longitude);
+
+      doSomething();
+    };
+
+    getLocation();
+
+    function doSomething(){
+      console.log(zipcode);
+      if(typeof zipcode !== "undefined"){
+        var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?zip=" + zipcode + ",us&APPID="+APIKey;
+        $.ajax({
+          url:queryURLlatlong,
+          method: "GET"
+        }).done(function(response){
+          console.log(queryURLlatlong);
+          $(".city").text(response.name); 
+          weather = response.weather[0].main;   
+          $(".weather").text(weather);   
+          temp = ((response.main.temp)* (9/5) - 459.67).toFixed(2);
+          $(".temp").text(temp + "F");
+          
+
+          var tag = document.createElement('script');
+
+          tag.src = "https://www.youtube.com/iframe_api";
+          var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+          console.log(weather);
+
+//weather codes
+          if(weather == "Clouds"){
+            videoselect = "P-eAx3Dxpj4";
+          };
+          if(weather == "Clear"){
+            videoselect = "lJJQEQJoc3s";
+          }
+
+          });
+
+        
+        var player;
+            function onYouTubeIframeAPIReady() {
+              player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: videoselect,
+                events: {
+                  'onReady': onPlayerReady,
+                  'onStateChange': onPlayerStateChange
+                }
+              });
+            }
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+              event.target.playVideo();
+            }
+
+            // 5. The API calls this function when the player's state changes.
+            //    The function indicates that when playing a video (state=1),
+            //    the player should play for six seconds and then stop.
+            var done = false;
+            function onPlayerStateChange(event) {
+              if (event.data == YT.PlayerState.PLAYING && !done) {
+                setTimeout(stopVideo, 6000);
+                done = true;
+              }
+            }
+            function stopVideo() {
+              player.stopVideo();
+            };
+
+
+      }
+      else{
+        console.log("zip is blank");
+        var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?lat="+Latitude+"&lon="+Longitude+"&APPID="+APIKey;
+        $.ajax({
+          url:queryURLlatlong,
+          method: "GET"
+        }).done(function(response){
+          console.log(queryURLlatlong);
+          $(".city").append(response.name); 
+          weather = response.weather[0].main;   
+          $(".weather").append(weather);   
+          temp = ((response.main.temp)* (9/5) - 459.67).toFixed(2);
+          $(".temp").append(temp + "F");
+          
+
+          var tag = document.createElement('script');
+
+          tag.src = "https://www.youtube.com/iframe_api";
+          var firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+          console.log(weather);
+
+//weather codes
+          if(weather == "Clouds"){
+            videoselect = "P-eAx3Dxpj4";
+          }
+
+          if(weather == "Clear"){
+            videoselect = "lJJQEQJoc3s";
+          }
+
+          });
+        };
+
+        };
+
+        var player;
+            function onYouTubeIframeAPIReady() {
+              player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: videoselect,
+                events: {
+                  'onReady': onPlayerReady,
+                  'onStateChange': onPlayerStateChange
+                }
+              });
+            }
+
+            // 4. The API will call this function when the video player is ready.
+            function onPlayerReady(event) {
+              event.target.playVideo();
+            }
+
+            // 5. The API calls this function when the player's state changes.
+            //    The function indicates that when playing a video (state=1),
+            //    the player should play for six seconds and then stop.
+            var done = false;
+            function onPlayerStateChange(event) {
+              if (event.data == YT.PlayerState.PLAYING && !done) {
+                setTimeout(stopVideo, 6000);
+                done = true;
+              }
+            }
+            function stopVideo() {
+              player.stopVideo();
+            };
+
+
 
 $(document).ready(function() {
     //  Activate the Tooltips
@@ -137,134 +309,4 @@ nowuiKit = {
 var big_image;
 
 // 
-
-// Returns a function, that, as long as it continues to be invoked, will not
-// be triggered. The function will be called after it stops being called for
-// N milliseconds. If `immediate` is passed, trigger the function on the
-// leading edge, instead of the trailing.
-
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-        var context = this,
-            args = arguments;
-        clearTimeout(timeout);
-        timeout = setTimeout(function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        }, wait);
-        if (immediate && !timeout) func.apply(context, args);
-    };
-};
-
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-        //return true;
-    }
-};
-
-function showPosition(position) {
-    Latitude = position.coords.latitude
-    Longitude = position.coords.longitude;
-    console.log(Latitude, Longitude);
-
-    doSomething();
-};
-
-getLocation();
-
-function doSomething() {
-    if (typeof Latitude === "undefined") {
-        console.log("fuck off, it's undefined");
-    } else {
-        var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?lat=" + Latitude + "&lon=" + Longitude + "&APPID=" + APIKey;
-        $.ajax({
-            url: queryURLlatlong,
-            method: "GET"
-        }).done(function(response) {
-            console.log(queryURLlatlong);
-            $(".city").append(response.name);
-            weather = response.weather[0].main;
-            $(".weather").append(weather);
-            temp = ((response.main.temp) * (9 / 5) - 459.67).toFixed(2);
-            $(".temp").append(temp + "F");
-
-
-            var tag = document.createElement('script');
-
-            tag.src = "https://www.youtube.com/iframe_api";
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-            console.log(weather);
-
-        });
-    };
-
-    videoselect = "FwmhT0YP_Ps";
-
-
-    console.log("Before Video: " + videoselect);
-    if (weather == "Clear") {
-        console.log(weather);
-        console.log("Weather is clear");
-        console.log("Video: " + videoselect);
-        // videoselect = "FwmhT0YP_Ps";
-    };
-
-};
-
-
-// 3. This function creates an <iframe> (and YouTube player)
-//    after the API code downloads.
-var player;
-
-function onYouTubeIframeAPIReady() {
-    player = new YT.Player('player', {
-        height: '390',
-        width: '640',
-        videoId: videoselect,
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
-}
-
-// 4. The API will call this function when the video player is ready.
-function onPlayerReady(event) {
-    event.target.playVideo();
-}
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-var done = false;
-
-function onPlayerStateChange(event) {
-    if (event.data == YT.PlayerState.PLAYING && !done) {
-        setTimeout(stopVideo, 6000);
-        done = true;
-    }
-}
-
-function stopVideo() {
-    player.stopVideo();
-};
-
-// window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];
-//   window.myWidgetParam.push({id: 11,cityid: '4684888',appid: 'ef63d363da22ab0a1073a52bfc83bfcb',units: 'imperial',containerid: 'openweathermap-widget-11',  });  
-//   (function() {var script = document.createElement('script');
-//     script.async = true;
-//     //script.src = "https://openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
-//     var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(script, s);  })();
-
-
-//          // (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-         // (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-         // m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-         // })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-         // ga('create', 'UA1601618-11', 'auto');
-         // ga('send', 'pageview');
 
