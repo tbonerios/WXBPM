@@ -33,7 +33,7 @@ var navbar_initialized,
         zipcode = $("#zipcode").val().trim();
         console.log(zipcode);
         doSomething();
-        
+
 
       });
     };
@@ -47,7 +47,7 @@ var navbar_initialized,
       doSomething();
     };
 
-    getLocation();
+    
 
     function doSomething(){
       console.log(zipcode);
@@ -206,11 +206,14 @@ firebase.initializeApp(config);
 
 var database = firebase.database();
 
+//--------------------
+//On page initial load, hide all but login page
+//--------------------
+
 $("#landing-page").hide();
 
-
 //--------------------
-//Log in existing user
+//Log in existing user function
 //--------------------
 
 function loginUser(){
@@ -227,9 +230,28 @@ function loginUser(){
   });
   clearFields();
       $("#login-page").show();
+
       // $("#landing-page").show();
   console.log(email);
 };
+
+//--------------------
+//Add new user function
+//--------------------
+function addNewUser(){
+  var newEmail = $("#login-email").val();
+  var newPassword = $("#login-password").val();
+
+  firebase.auth().createUserWithEmailAndPassword(newEmail, newPassword).catch(function(error){
+    if (error){
+      alert("Please login with user name and password already created.");
+    } else {
+      alert(error);
+    }
+  });
+  clearFields();
+
+}
 
 //--------------------
 //Sign out currently signed in user
@@ -244,6 +266,7 @@ function signoutUser(){
   clearFields();
   $("#landing-page").hide();
   $("#login-page").show();
+
   alert("Current user has been succesfully signed out.");
 };
 
@@ -255,10 +278,19 @@ firebase.auth().onAuthStateChanged(function(user){
     var email = user.email;
     //Display landing page if true
     $("#landing-page").show();
+
+    $(".city").text("");    
+    $(".weather").text("");   
+    $(".temp").text("");
+
+
+    getLocation();
     $("#login-page").hide();
+
   }
   console.log(email);
   $(".user-name").text("Welcome, " + " " + email +"!");
+
 });
 
 
@@ -267,6 +299,7 @@ firebase.auth().onAuthStateChanged(function(user){
 //--------------------
 function clearFields(){
   $(".form-control").val("");
+
 };
 
 //--------------------
@@ -277,6 +310,15 @@ $("#submit-login").on("click", function(event){
   loginUser();
 
 });
+
+//--------------------
+//Add new user on click event
+//--------------------
+$("#submit-new-user").on("click", function(event){
+  event.preventDefault;
+  addNewUser();
+
+})
 
 //--------------------
 //Sign out existing user on click event
