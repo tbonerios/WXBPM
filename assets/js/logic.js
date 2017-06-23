@@ -7,14 +7,16 @@ var navbar_initialized,
     backgroundOrange = false,
     toggle_initialized = false;
 
- var Latitude;
-    var Longitude;
-    var APIKey = "166a433c57516f51dfab1f7edaed8413";
-    var weather;
-    var temp;
-    var videoselect;
-    var clouds = "P-eAx3Dxpj4";
-    var zipcode;
+  var Latitude;
+  var Longitude;
+  var APIKey = "166a433c57516f51dfab1f7edaed8413";
+  var weather;
+  var temp;
+  var videoselect;
+  var zipcode;
+  var clouds = ["EwTZ2xpQwpA","tIdIqbv7SPo"];
+  var cold = ["moSFlvxnbgk","mjwV5w0IrcA","prN3bPmDqr4"];
+  var hot = ["zeqj0Af14_I","ipjAhlDKzHQ","aZ_KTSo_Tnk"];
 
         function getLocation(){
       console.log(navigator.geolocation)
@@ -36,7 +38,6 @@ var navbar_initialized,
 
       });
     };
-
 
     function showPosition(position) {
       Latitude = position.coords.latitude 
@@ -72,17 +73,21 @@ var navbar_initialized,
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          };
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
 
           });
-
         
-        var player;
+       var player;
             function onYouTubeIframeAPIReady() {
               player = new YT.Player('player', {
                 height: '390',
@@ -115,7 +120,7 @@ var navbar_initialized,
             };
 
 
-      }
+     }
       else{
         console.log("zip is blank");
         var queryURLlatlong = "http://api.openweathermap.org/data/2.5/weather?lat="+Latitude+"&lon="+Longitude+"&APPID="+APIKey;
@@ -139,13 +144,17 @@ var navbar_initialized,
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          }
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
 
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
 
           });
         };
@@ -187,6 +196,107 @@ var navbar_initialized,
 
 
 $(document).ready(function() {
+
+  //--------------------
+//Firebase connection
+//--------------------
+
+var config = {
+    apiKey: "AIzaSyBQm5YyqpKJmheApMxhz9kjwGh8HLPff0U",
+    authDomain: "wxbpm1.firebaseapp.com",
+    databaseURL: "https://wxbpm1.firebaseio.com",
+    projectId: "wxbpm1",
+    storageBucket: "wxbpm1.appspot.com",
+    messagingSenderId: "119712302469"
+  };
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+$("#landing-page").hide();
+
+
+//--------------------
+//Log in existing user
+//--------------------
+
+function loginUser(){
+  var email = $("#login-email").val();
+  var password = $("#login-password").val();
+  firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error){
+
+    if (!error){
+      
+    }
+   else {
+      alert(error);
+      }
+  });
+  clearFields();
+      $("#login-page").show();
+      // $("#landing-page").show();
+  console.log(email);
+};
+
+//--------------------
+//Sign out currently signed in user
+//--------------------
+
+function signoutUser(){
+  firebase.auth().signOut().then(function(){
+
+  }, function(error){
+      console.error('Sign out error', error)
+  });
+  clearFields();
+  $("#landing-page").hide();
+  $("#login-page").show();
+  alert("Current user has been succesfully signed out.");
+};
+
+//--------------------
+//Get currently logged in user
+//--------------------
+firebase.auth().onAuthStateChanged(function(user){
+  if(user){
+    var email = user.email;
+    //Display landing page if true
+    $("#landing-page").show();
+    $("#login-page").hide();
+  }
+  console.log(email);
+  $(".user-name").text("Welcome, " + " " + email +"!");
+});
+
+
+//--------------------
+//Clear fields function
+//--------------------
+function clearFields(){
+  $(".form-control").val("");
+};
+
+//--------------------
+//Login existing user on click event
+//--------------------
+$("#submit-login").on("click", function(event){
+  event.preventDefault();
+  loginUser();
+
+});
+
+//--------------------
+//Sign out existing user on click event
+//--------------------
+$(".sign-out-submit").on("click", function(event){
+  event.preventDefault();
+  signoutUser();
+
+})
+
+
+
     //  Activate the Tooltips
     $('[data-toggle="tooltip"], [rel="tooltip"]').tooltip();
 
@@ -201,19 +311,7 @@ $(document).ready(function() {
     $navbar = $('.navbar[color-on-scroll]');
     scroll_distance = $navbar.attr('color-on-scroll') || 500;
 
-    // Check if we have the class "navbar-color-on-scroll" then add the function to remove the class "navbar-transparent" so it will transform to a plain color.
-
-    // if ($('.navbar[color-on-scroll]').length != 0) {
-    //     nowuiKit.checkScrollForTransparentNavbar();
-    //     $(window).on('scroll', nowuiKit.checkScrollForTransparentNavbar)
-    // }
-
-    // $('.form-control').on("focus", function() {
-    //     $(this).parent('.input-group').addClass("input-group-focus");
-    // }).on("blur", function() {
-    //     $(this).parent(".input-group").removeClass("input-group-focus");
-    // });
-
+  
     // Activate bootstrapSwitch
     $('.bootstrap-switch').each(function() {
         $this = $(this);
@@ -240,20 +338,6 @@ nowuiKit = {
     misc: {
         navbar_menu_visible: 0
     },
-
-    // checkScrollForTransparentNavbar: debounce(function() {
-    //     if ($(document).scrollTop() > scroll_distance) {
-    //         if (transparent) {
-    //             transparent = false;
-    //             $('.navbar[color-on-scroll]').removeClass('navbar-transparent');
-    //         }
-    //     } else {
-    //         if (!transparent) {
-    //             transparent = true;
-    //             $('.navbar[color-on-scroll]').addClass('navbar-transparent');
-    //         }
-    //     }
-    // }, 17),
 
 
 
