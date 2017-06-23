@@ -7,14 +7,16 @@ var navbar_initialized,
     backgroundOrange = false,
     toggle_initialized = false;
 
- var Latitude;
-    var Longitude;
-    var APIKey = "166a433c57516f51dfab1f7edaed8413";
-    var weather;
-    var temp;
-    var videoselect;
-    var clouds = "P-eAx3Dxpj4";
-    var zipcode;
+  var Latitude;
+  var Longitude;
+  var APIKey = "166a433c57516f51dfab1f7edaed8413";
+  var weather;
+  var temp;
+  var videoselect;
+  var zipcode;
+  var clouds = ["EwTZ2xpQwpA","tIdIqbv7SPo"];
+  var cold = ["moSFlvxnbgk","mjwV5w0IrcA","prN3bPmDqr4"];
+  var hot = ["zeqj0Af14_I","ipjAhlDKzHQ","aZ_KTSo_Tnk"];
 
         function getLocation(){
       console.log(navigator.geolocation)
@@ -72,12 +74,17 @@ var navbar_initialized,
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          };
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
+
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
 
           });
 
@@ -139,13 +146,17 @@ var navbar_initialized,
           console.log(weather);
 
 //weather codes
-          if(weather == "Clouds"){
-            videoselect = "P-eAx3Dxpj4";
-          }
+            if(weather == "Clouds" || weather == "Rain" || weather == "Fog" || weather =="Misty"){
+                videoselect = clouds[Math.floor(Math.random()*clouds.length)];
+            };
 
-          if(weather == "Clear"){
-            videoselect = "lJJQEQJoc3s";
-          }
+            if(weather == "Cold" || weather == "Freezing"){
+                videoselect = cold[Math.floor(Math.random()*cold.length)];
+            };
+
+            if(weather == "Hot" || weather == "Clear"){
+                videoselect = hot[Math.floor(Math.random()*hot.length)];
+            };
 
           });
         };
